@@ -10,7 +10,7 @@ import {
   BangumiCalendarData,
   GetBangumiCalendarData,
 } from '@/lib/bangumi.client';
-// 客户端收藏 API
+// 客戶端收藏 API
 import {
   clearAllFavorites,
   getAllFavorites,
@@ -40,7 +40,7 @@ function HomeClient() {
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
 
-  // 检查公告弹窗状态
+  // 檢查公告彈窗狀態
   useEffect(() => {
     if (typeof window !== 'undefined' && announcement) {
       const hasSeenAnnouncement = localStorage.getItem('hasSeenAnnouncement');
@@ -52,7 +52,7 @@ function HomeClient() {
     }
   }, [announcement]);
 
-  // 收藏夹数据
+  // 收藏夾數據
   type FavoriteItem = {
     id: string;
     source: string;
@@ -72,7 +72,7 @@ function HomeClient() {
       try {
         setLoading(true);
 
-        // 并行获取热门电影、热门剧集和热门综艺
+        // 並行獲取熱門電影、熱門劇集和熱門綜藝
         const [moviesData, tvShowsData, varietyShowsData, bangumiCalendarData] =
           await Promise.all([
             getDoubanCategories({
@@ -99,7 +99,7 @@ function HomeClient() {
 
         setBangumiCalendarData(bangumiCalendarData);
       } catch (error) {
-        console.error('获取推荐数据失败:', error);
+        console.error('獲取推薦數據失敗:', error);
       } finally {
         setLoading(false);
       }
@@ -108,11 +108,11 @@ function HomeClient() {
     fetchRecommendData();
   }, []);
 
-  // 处理收藏数据更新的函数
+  // 處理收藏數據更新的函數
   const updateFavoriteItems = async (allFavorites: Record<string, any>) => {
     const allPlayRecords = await getAllPlayRecords();
 
-    // 根据保存时间排序（从近到远）
+    // 根據保存時間排序（從近到遠）
     const sorted = Object.entries(allFavorites)
       .sort(([, a], [, b]) => b.save_time - a.save_time)
       .map(([key, fav]) => {
@@ -120,7 +120,7 @@ function HomeClient() {
         const source = key.slice(0, plusIndex);
         const id = key.slice(plusIndex + 1);
 
-        // 查找对应的播放记录，获取当前集数
+        // 查找對應的播放紀錄，獲取當前集數
         const playRecord = allPlayRecords[key];
         const currentEpisode = playRecord?.index;
 
@@ -140,7 +140,7 @@ function HomeClient() {
     setFavoriteItems(sorted);
   };
 
-  // 当切换到收藏夹时加载收藏数据
+  // 當切換到收藏夾時加載收藏數據
   useEffect(() => {
     if (activeTab !== 'favorites') return;
 
@@ -151,7 +151,7 @@ function HomeClient() {
 
     loadFavorites();
 
-    // 监听收藏更新事件
+    // 監聽收藏更新事件
     const unsubscribe = subscribeToDataUpdates(
       'favoritesUpdated',
       (newFavorites: Record<string, any>) => {
@@ -164,13 +164,13 @@ function HomeClient() {
 
   const handleCloseAnnouncement = (announcement: string) => {
     setShowAnnouncement(false);
-    localStorage.setItem('hasSeenAnnouncement', announcement); // 记录已查看弹窗
+    localStorage.setItem('hasSeenAnnouncement', announcement); // 記錄已查看彈窗
   };
 
   return (
     <PageLayout>
       <div className='px-2 sm:px-10 py-4 sm:py-8 overflow-visible'>
-        {/* 顶部 Tab 切换 */}
+        {/* 頂部 Tab 切換 */}
         <div className='mb-8 flex justify-center'>
           <CapsuleSwitch
             options={[
@@ -184,7 +184,7 @@ function HomeClient() {
 
         <div className='max-w-[95%] mx-auto'>
           {activeTab === 'favorites' ? (
-            // 收藏夹视图
+            // 收藏夾視圖
             <section className='mb-8'>
               <div className='mb-4 flex items-center justify-between'>
                 <h2 className='text-xl font-bold text-gray-800 dark:text-gray-200'>
@@ -221,12 +221,12 @@ function HomeClient() {
               </div>
             </section>
           ) : (
-            // 首页视图
+            // 首頁視圖
             <>
-              {/* 继续观看 */}
+              {/* 繼續觀看 */}
               <ContinueWatching />
 
-              {/* 热门电影 */}
+              {/* 熱門電影 */}
               <section className='mb-8'>
                 <div className='mb-4 flex items-center justify-between'>
                   <h2 className='text-xl font-bold text-gray-800 dark:text-gray-200'>
@@ -242,7 +242,7 @@ function HomeClient() {
                 </div>
                 <ScrollableRow>
                   {loading
-                    ? // 加载状态显示灰色占位数据
+                    ? // 加載狀態顯示灰色占位數據
                     Array.from({ length: 8 }).map((_, index) => (
                       <div
                         key={index}
@@ -254,7 +254,7 @@ function HomeClient() {
                         <div className='mt-2 h-4 bg-gray-200 rounded animate-pulse dark:bg-gray-800'></div>
                       </div>
                     ))
-                    : // 显示真实数据
+                    : // 顯示真實數據
                     hotMovies.map((movie, index) => (
                       <div
                         key={index}
@@ -274,11 +274,11 @@ function HomeClient() {
                 </ScrollableRow>
               </section>
 
-              {/* 热门剧集 */}
+              {/* 熱門劇集 */}
               <section className='mb-8'>
                 <div className='mb-4 flex items-center justify-between'>
                   <h2 className='text-xl font-bold text-gray-800 dark:text-gray-200'>
-                    热门剧集
+                    熱門劇集
                   </h2>
                   <Link
                     href='/douban?type=tv'
@@ -290,7 +290,7 @@ function HomeClient() {
                 </div>
                 <ScrollableRow>
                   {loading
-                    ? // 加载状态显示灰色占位数据
+                    ? // 加載狀態顯示灰色占位數據
                     Array.from({ length: 8 }).map((_, index) => (
                       <div
                         key={index}
@@ -302,7 +302,7 @@ function HomeClient() {
                         <div className='mt-2 h-4 bg-gray-200 rounded animate-pulse dark:bg-gray-800'></div>
                       </div>
                     ))
-                    : // 显示真实数据
+                    : // 顯示真實數據
                     hotTvShows.map((show, index) => (
                       <div
                         key={index}
@@ -337,7 +337,7 @@ function HomeClient() {
                 </div>
                 <ScrollableRow>
                   {loading
-                    ? // 加载状态显示灰色占位数据
+                    ? // 加載狀態顯示灰色占位數據
                     Array.from({ length: 8 }).map((_, index) => (
                       <div
                         key={index}
@@ -349,9 +349,9 @@ function HomeClient() {
                         <div className='mt-2 h-4 bg-gray-200 rounded animate-pulse dark:bg-gray-800'></div>
                       </div>
                     ))
-                    : // 展示当前日期的番剧
+                    : // 展示當前日期的番劇
                     (() => {
-                      // 获取当前日期对应的星期
+                      // 獲取當前日期對應的星期
                       const today = new Date();
                       const weekdays = [
                         'Sun',
@@ -364,7 +364,7 @@ function HomeClient() {
                       ];
                       const currentWeekday = weekdays[today.getDay()];
 
-                      // 找到当前星期对应的番剧数据
+                      // 找到當前星期對應的番劇數據
                       const todayAnimes =
                         bangumiCalendarData.find(
                           (item) => item.weekday.en === currentWeekday
@@ -396,11 +396,11 @@ function HomeClient() {
                 </ScrollableRow>
               </section>
 
-              {/* 热门综艺 */}
+              {/* 熱門綜藝 */}
               <section className='mb-8'>
                 <div className='mb-4 flex items-center justify-between'>
                   <h2 className='text-xl font-bold text-gray-800 dark:text-gray-200'>
-                    热门综艺
+                    熱門綜藝
                   </h2>
                   <Link
                     href='/douban?type=show'
@@ -412,7 +412,7 @@ function HomeClient() {
                 </div>
                 <ScrollableRow>
                   {loading
-                    ? // 加载状态显示灰色占位数据
+                    ? // 加載狀態顯示灰色占位數據
                     Array.from({ length: 8 }).map((_, index) => (
                       <div
                         key={index}
@@ -424,7 +424,7 @@ function HomeClient() {
                         <div className='mt-2 h-4 bg-gray-200 rounded animate-pulse dark:bg-gray-800'></div>
                       </div>
                     ))
-                    : // 显示真实数据
+                    : // 顯示真實數據
                     hotVarietyShows.map((show, index) => (
                       <div
                         key={index}
@@ -451,36 +451,32 @@ function HomeClient() {
           className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm dark:bg-black/70 p-4 transition-opacity duration-300 ${showAnnouncement ? '' : 'opacity-0 pointer-events-none'
             }`}
           onTouchStart={(e) => {
-            // 如果点击的是背景区域，阻止触摸事件冒泡，防止背景滚动
             if (e.target === e.currentTarget) {
               e.preventDefault();
             }
           }}
           onTouchMove={(e) => {
-            // 如果触摸的是背景区域，阻止触摸移动，防止背景滚动
             if (e.target === e.currentTarget) {
               e.preventDefault();
               e.stopPropagation();
             }
           }}
           onTouchEnd={(e) => {
-            // 如果触摸的是背景区域，阻止触摸结束事件，防止背景滚动
             if (e.target === e.currentTarget) {
               e.preventDefault();
             }
           }}
           style={{
-            touchAction: 'none', // 禁用所有触摸操作
+            touchAction: 'none',
           }}
         >
           <div
             className='w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-gray-900 transform transition-all duration-300 hover:shadow-2xl'
             onTouchMove={(e) => {
-              // 允许公告内容区域正常滚动，阻止事件冒泡到外层
               e.stopPropagation();
             }}
             style={{
-              touchAction: 'auto', // 允许内容区域的正常触摸操作
+              touchAction: 'auto',
             }}
           >
             <div className='flex justify-between items-start mb-4'>
@@ -490,7 +486,7 @@ function HomeClient() {
               <button
                 onClick={() => handleCloseAnnouncement(announcement)}
                 className='text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-white transition-colors'
-                aria-label='关闭'
+                aria-label='關閉'
               ></button>
             </div>
             <div className='mb-6'>
