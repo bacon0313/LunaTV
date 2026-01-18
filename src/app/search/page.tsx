@@ -4,6 +4,8 @@
 import { ChevronUp, Search, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { startTransition, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { s2t } from 's2t-ws'; // <--- 加入這一行
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import {
   addSearchHistory,
@@ -597,31 +599,30 @@ function SearchPageClient() {
 
   // 搜索表单提交时触发，处理搜索逻辑
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = searchQuery.trim().replace(/\s+/g, ' ');
-    if (!trimmed) return;
+  e.preventDefault();
+  let trimmed = searchQuery.trim().replace(/\s+/g, ' '); // 改用 let
+  if (!trimmed) return;
 
-    // 回显搜索框
-    setSearchQuery(trimmed);
-    setIsLoading(true);
-    setShowResults(true);
-    setShowSuggestions(false);
+  trimmed = s2t(trimmed); // <--- 在這裡把「阿凡達」變成「阿凡达」
 
-    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
-    // 其余由 searchParams 变化的 effect 处理
-  };
+  setSearchQuery(trimmed); // 同步更新輸入框顯示
+  setIsLoading(true);
+  setShowResults(true);
+  setShowSuggestions(false);
+
+  router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+};
 
   const handleSuggestionSelect = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    setShowSuggestions(false);
+  const simplified = s2t(suggestion); // <--- 加入轉換
+  setSearchQuery(simplified);
+  setShowSuggestions(false);
 
-    // 自动执行搜索
-    setIsLoading(true);
-    setShowResults(true);
+  setIsLoading(true);
+  setShowResults(true);
 
-    router.push(`/search?q=${encodeURIComponent(suggestion)}`);
-    // 其余由 searchParams 变化的 effect 处理
-  };
+  router.push(`/search?q=${encodeURIComponent(simplified)}`);
+};
 
   // 返回顶部功能
   const scrollToTop = () => {
